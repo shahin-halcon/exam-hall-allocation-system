@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Halls{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Exam Halls</h2>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addHallModal">
+            <i class="fas fa-plus"></i> Add New Hall
+        </button>
+    </div>
+
+    {% if halls %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Building</th>
+                    <th>Floor</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                    <th>Current Seats</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hall in halls %}
+                <tr>
+                    <td>{{ hall.name }}</td>
+                    <td>{{ hall.building_name }}</td>
+                    <td>{{ hall.floor_number }}</td>
+                    <td>{{ hall.capacity }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if hall.status == 'Available' else 'warning' if hall.status == 'Maintenance' else 'danger' }}">
+                            {{ hall.status }}
+                        </span>
+                    </td>
+                    <td>{{ hall.current_seat_number }}/{{ hall.capacity }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="editHall({{ hall.id }}, '{{ hall.name }}', '{{ hall.building_name }}', {{ hall.floor_number }}, {{ hall.capacity }}, '{{ hall.status }}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteHall({{ hall.id }})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> No halls available.
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Hall Modal -->
+<div class="modal fade" id="addHallModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Hall</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('add_hall') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Hall Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="building_name" class="form-label">Building</label>
+                        <input type="text" class="form-control" id="building_name" name="building_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="floor_number" class="form-label">Floor</label>
+                        <input type="number" class="form-control" id="floor_number" name="floor_number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Seating Capacity</label>
+                        <input type="number" class="form-control" id="capacity" name="capacity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="Available">Available</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Full">Full</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Hall</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Hall Modal -->
+<div class="modal fade" id="editHallModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Hall</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editHallForm" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="edit_name" class="form-label">Hall Name</label>
+                        <input type="text" class="form-control" id="edit_name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_building_name" class="form-label">Building</label>
+                        <input type="text" class="form-control" id="edit_building_name" name="building_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_floor_number" class="form-label">Floor</label>
+                        <input type="number" class="form-control" id="edit_floor_number" name="floor_number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_capacity" class="form-label">Seating Capacity</label>
+                        <input type="number" class="form-control" id="edit_capacity" name="capacity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_status" class="form-label">Status</label>
+                        <select class="form-select" id="edit_status" name="status">
+                            <option value="Available">Available</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Full">Full</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function deleteHall(hallId) {
+    if (confirm('Are you sure you want to delete this hall?')) {
+        fetch(`/halls/${hallId}/delete`, {
+            method: 'POST'
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            }
+        });
+    }
+}
+
+function editHall(id, name, building_name, floor_number, capacity, status) {
+    document.getElementById('editHallForm').action = `/halls/${id}/update`;
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_building_name').value = building_name;
+    document.getElementById('edit_floor_number').value = floor_number;
+    document.getElementById('edit_capacity').value = capacity;
+    document.getElementById('edit_status').value = status;
+    new bootstrap.Modal(document.getElementById('editHallModal')).show();
+}
+</script>
+{% endblock %}
+
+{% endblock %} 

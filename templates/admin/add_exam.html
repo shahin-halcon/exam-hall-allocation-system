@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Add Exam - Exam Hall Allocation System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h3>Add New Exam</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('add_exam') }}">
+                <div class="mb-3">
+                    <label for="course_id" class="form-label">Course</label>
+                    <select class="form-control" id="course_id" name="course_id" required>
+                        <option value="">Select Course</option>
+                        {% for course in courses %}
+                        <option value="{{ course.id }}">{{ course.code }} - {{ course.name }} (Semester {{ course.semester }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="exam_date" class="form-label">Exam Date</label>
+                    <input type="date" class="form-control" id="exam_date" name="exam_date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="start_time" class="form-label">Start Time</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time" required>
+                </div>
+                <div class="mb-3">
+                    <label for="duration" class="form-label">Duration (minutes)</label>
+                    <input type="number" class="form-control" id="duration" name="duration" min="30" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Exam</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - Exam Hall Allocation System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Welcome, {{ student.full_name }}</h2>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Your Details</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Registration Number:</strong> {{ student.registration_number }}</p>
+            <p><strong>Email:</strong> {{ student.email }}</p>
+            <p><strong>Course:</strong> {{ student.course }}</p>
+            <p><strong>Semester:</strong> {{ student.semester }}</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h4>Your Exam Allocations</h4>
+        </div>
+        <div class="card-body">
+            {% if allocations %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Exam Date</th>
+                            <th>Start Time</th>
+                            <th>Hall</th>
+                            <th>Seat Number</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for allocation in allocations %}
+                        <tr>
+                            <td>{{ allocation.exam.course_code }}</td>
+                            <td>{{ allocation.exam.course_name }}</td>
+                            <td>{{ allocation.exam.exam_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ allocation.exam.start_time.strftime('%H:%M') }}</td>
+                            <td>
+                                {% if student.hall_id %}
+                                    {{ student.hall.name }}
+                                {% else %}
+                                    Not Assigned
+                                {% endif %}
+                            </td>
+                            <td>{{ allocation.seat_number }}</td>
+                            <td>
+                                <span class="badge {% if student.status == 'Allocated' %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ student.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                No exam allocations found. Please check back later.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Important Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="fas fa-clock text-warning me-2"></i>
+                            Please arrive at least 30 minutes before the exam start time
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-id-card text-info me-2"></i>
+                            Bring your student ID card to all exams
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-ban text-danger me-2"></i>
+                            Mobile phones and electronic devices are not allowed
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-pencil-alt text-success me-2"></i>
+                            Bring necessary stationery items
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bell me-2"></i>Notifications
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                        <p class="lead mb-0">No new notifications</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Exam - Exam Hall Allocation System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow">
+        <div class="card-header">
+            <h5 class="m-0 font-weight-bold text-primary">Edit Exam</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('update_exam', exam_id=exam.id) }}" method="POST">
+                <div class="mb-3">
+                    <label for="course_code" class="form-label">Course Code</label>
+                    <input type="text" class="form-control" id="course_code" name="course_code" value="{{ exam.course_code }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="course_name" class="form-label">Course Name</label>
+                    <input type="text" class="form-control" id="course_name" name="course_name" value="{{ exam.course_name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="exam_date" class="form-label">Exam Date</label>
+                    <input type="date" class="form-control" id="exam_date" name="exam_date" value="{{ exam.exam_date.strftime('%Y-%m-%d') }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="start_time" class="form-label">Start Time</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time" value="{{ exam.start_time.strftime('%H:%M') }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="duration" class="form-label">Duration (minutes)</label>
+                    <input type="number" class="form-control" id="duration" name="duration" value="{{ exam.duration }}" required>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('exams') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update Exam</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

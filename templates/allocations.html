@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Allocations - Exam Hall Allocation System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Allocations List</h6>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAllocationModal">
+                <i class="fas fa-plus"></i> Add Allocation
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Exam</th>
+                            <th>Hall</th>
+                            <th>Seat Number</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for allocation, student, exam, hall in allocations %}
+                        <tr>
+                            <td>{{ student.register_number }} - {{ student.first_name }} {{ student.last_name }}</td>
+                            <td>{{ exam.course_code }} - {{ exam.course_name }}</td>
+                            <td>
+                                {% if hall %}
+                                    {{ hall.name }} ({{ hall.building_name }}, Floor {{ hall.floor_number }})
+                                {% else %}
+                                    Not allocated
+                                {% endif %}
+                            </td>
+                            <td>{{ allocation.seat_number }}</td>
+                            <td>{{ exam.exam_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="{{ url_for('edit_allocation', allocation_id=allocation.id) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ url_for('delete_allocation', allocation_id=allocation.id) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this allocation?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Allocation Modal -->
+<div class="modal fade" id="addAllocationModal" tabindex="-1" aria-labelledby="addAllocationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAllocationModalLabel">Add New Allocation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('add_allocation') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="exam_id" class="form-label">Exam</label>
+                        <select class="form-control" id="exam_id" name="exam_id" required>
+                            <option value="">Select Exam</option>
+                            {% for exam in exams %}
+                            <option value="{{ exam.id }}">
+                                {{ exam.course_code }} - {{ exam.course_name }} ({{ exam.exam_date.strftime('%Y-%m-%d') }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">Student</label>
+                        <select class="form-control" id="student_id" name="student_id" required>
+                            <option value="">Select Student</option>
+                            {% for student in students %}
+                            <option value="{{ student.id }}">
+                                {{ student.register_number }} - {{ student.first_name }} {{ student.last_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="hall_id" class="form-label">Hall</label>
+                        <select class="form-control" id="hall_id" name="hall_id" required>
+                            <option value="">Select Hall</option>
+                            {% for hall in halls %}
+                            <option value="{{ hall.id }}">
+                                {{ hall.name }} ({{ hall.building_name }}, Floor {{ hall.floor_number }}, Available Seats: {{ hall.capacity - hall.current_seat_number }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Seat number will be assigned automatically based on hall availability.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Allocation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
+{% endblock %} 

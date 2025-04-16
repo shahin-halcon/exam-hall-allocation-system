@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Notifications{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">System Notifications</h2>
+    
+    <div class="row">
+        <div class="col-md-12">
+            {% if notifications %}
+            <div class="list-group">
+                {% for notification in notifications %}
+                <div class="list-group-item list-group-item-{{ notification.type }} {% if not notification.is_read %}fw-bold{% endif %}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">
+                            {% if notification.type == 'danger' %}
+                            <i class="fas fa-exclamation-triangle text-danger"></i>
+                            {% elif notification.type == 'warning' %}
+                            <i class="fas fa-exclamation-circle text-warning"></i>
+                            {% else %}
+                            <i class="fas fa-info-circle text-info"></i>
+                            {% endif %}
+                            {{ notification.message }}
+                        </h5>
+                        <small>{{ notification.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    {% if not notification.is_read %}
+                    <button class="btn btn-sm btn-outline-secondary mt-2" 
+                            onclick="markAsRead({{ notification.id }})">
+                        Mark as Read
+                    </button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No notifications at this time.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function markAsRead(notificationId) {
+    fetch(`/admin/notifications/mark-read/${notificationId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %} 

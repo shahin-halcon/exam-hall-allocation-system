@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Hall Ticket{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header text-center bg-primary text-white">
+            <h2>EXAM HALL TICKET</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-12 text-center">
+                    <h4>{{ student.first_name }} {{ student.last_name }}</h4>
+                    <p class="text-muted">Registration Number: {{ student.register_number }}</p>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="border-bottom pb-2">Exam Details</h5>
+                    <p><strong>Course Code:</strong> {{ exam.course_code }}</p>
+                    <p><strong>Course Name:</strong> {{ exam.course_name }}</p>
+                    <p><strong>Date:</strong> {{ exam.exam_date.strftime('%B %d, %Y') }}</p>
+                    <p><strong>Time:</strong> {{ exam.start_time.strftime('%I:%M %p') }}</p>
+                    <p><strong>Duration:</strong> {{ exam.duration }} minutes</p>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="border-bottom pb-2">Seating Details</h5>
+                    {% if allocation.hall %}
+                        <p><strong>Hall:</strong> {{ allocation.hall.name }}</p>
+                        <p><strong>Building:</strong> {{ allocation.hall.building_name }}</p>
+                        <p><strong>Floor:</strong> {{ allocation.hall.floor_number }}</p>
+                        <p><strong>Seat Number:</strong> {{ allocation.seat_number }}</p>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            Hall allocation pending. Please check back later.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">Important Instructions:</h5>
+                        <ol>
+                            <li>Please arrive at least 30 minutes before the exam start time.</li>
+                            <li>Bring your student ID card and this hall ticket.</li>
+                            <li>No electronic devices are allowed in the exam hall.</li>
+                            <li>Follow all exam hall rules and regulations.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12 text-center">
+                    <button onclick="window.print()" class="btn btn-primary">
+                        <i class="fas fa-print"></i> Print Hall Ticket
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <small class="text-muted">Generated on {{ allocation.created_at.strftime('%B %d, %Y at %I:%M %p') }}</small>
+        </div>
+    </div>
+</div>
+
+<style media="print">
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
+    .btn {
+        display: none;
+    }
+    .alert {
+        border: 1px solid #ccc !important;
+    }
+    .card {
+        border: none !important;
+    }
+    .card-header {
+        background-color: #000 !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact;
+    }
+</style>
+{% endblock %} 

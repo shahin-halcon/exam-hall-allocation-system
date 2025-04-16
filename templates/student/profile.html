@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Student Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Student Information Card -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Student Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <p><strong>Registration Number:</strong><br>{{ student.register_number }}</p>
+                        </div>
+                        <div class="info-item">
+                            <p><strong>Name:</strong><br>{{ student.first_name }} {{ student.last_name }}</p>
+                        </div>
+                        <div class="info-item">
+                            <p><strong>Email:</strong><br>{{ student.email }}</p>
+                        </div>
+                        <div class="info-item">
+                            <p><strong>Course:</strong><br>{{ student.course }}</p>
+                        </div>
+                        <div class="info-item">
+                            <p><strong>Semester:</strong><br>{{ student.semester }}</p>
+                        </div>
+                        <div class="info-item">
+                            <p><strong>Account Created:</strong><br>{{ student.created_at.strftime('%Y-%m-%d') }}</p>
+                        </div>
+                        <div class="info-item">
+                            <p><strong>Last Updated:</strong><br>{{ student.updated_at.strftime('%Y-%m-%d') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exam Allocations Card -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">My Exam Allocations</h4>
+                </div>
+                <div class="card-body">
+                    {% if allocations %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Course Code</th>
+                                    <th>Date & Time</th>
+                                    <th>Duration</th>
+                                    <th>Hall</th>
+                                    <th>Seat Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for allocation in allocations %}
+                                <tr>
+                                    <td>{{ allocation.exam.course_name }}</td>
+                                    <td>{{ allocation.exam.course_code }}</td>
+                                    <td>
+                                        {{ allocation.exam.exam_date.strftime('%Y-%m-%d') }}<br>
+                                        {{ allocation.exam.start_time.strftime('%H:%M') }}
+                                    </td>
+                                    <td>{{ allocation.exam.duration }} mins</td>
+                                    <td>
+                                        {{ allocation.hall.name }}<br>
+                                        <small class="text-muted">
+                                            Building: {{ allocation.hall.building_name }}<br>
+                                            Floor: {{ allocation.hall.floor_number }}
+                                        </small>
+                                    </td>
+                                    <td>{{ allocation.seat_number }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No exam allocations found. Please check back later.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-info {
+    padding: 10px;
+}
+.info-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+.info-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.info-item strong {
+    color: #495057;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+.card-header {
+    border-bottom: 2px solid rgba(0,0,0,0.125);
+}
+.table th {
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %} 

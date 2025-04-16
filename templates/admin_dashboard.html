@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Exam Hall Allocation System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+    
+    <div class="row g-4">
+        <!-- Student Management Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-users me-2"></i>Student Management
+                    </h5>
+                    <p class="card-text">View and manage student registrations and exam allocations.</p>
+                    <a href="{{ url_for('students') }}" class="btn btn-primary">
+                        Manage Students
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Exam Management Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-calendar-alt me-2"></i>Exam Schedule
+                    </h5>
+                    <p class="card-text">Schedule exams and manage exam timetables.</p>
+                    <a href="{{ url_for('exams') }}" class="btn btn-primary">
+                        Manage Exams
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hall Management Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-building me-2"></i>Hall Management
+                    </h5>
+                    <p class="card-text">Manage examination halls and their capacity.</p>
+                    <a href="{{ url_for('halls') }}" class="btn btn-primary">
+                        Manage Halls
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hall Allocation Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-chair me-2"></i>Seat Allocation
+                    </h5>
+                    <p class="card-text">Allocate seats to students for scheduled exams.</p>
+                    <a href="{{ url_for('allocations') }}" class="btn btn-primary">
+                        Manage Allocations
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

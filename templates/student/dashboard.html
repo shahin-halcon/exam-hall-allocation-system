@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">Student Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> {{ student.first_name }} {{ student.last_name }}</p>
+                            <p><strong>Registration Number:</strong> {{ student.register_number }}</p>
+                            <p><strong>Email:</strong> {{ student.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Course:</strong> {{ student.course }}</p>
+                            <p><strong>Semester:</strong> {{ student.semester }}</p>
+                            <p><strong>Account Created:</strong> {{ student.created_at.strftime('%Y-%m-%d') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">Your Exam Allocations</h4>
+                </div>
+                <div class="card-body">
+                    {% if allocations %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Course Code</th>
+                                        <th>Course Name</th>
+                                        <th>Exam Date</th>
+                                        <th>Start Time</th>
+                                        <th>Duration</th>
+                                        <th>Hall</th>
+                                        <th>Seat Number</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for allocation in allocations %}
+                                    <tr>
+                                        <td>{{ allocation.exam.course_code }}</td>
+                                        <td>{{ allocation.exam.course_name }}</td>
+                                        <td>{{ allocation.exam.exam_date.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ allocation.exam.start_time.strftime('%H:%M') }}</td>
+                                        <td>{{ allocation.exam.duration }} minutes</td>
+                                        <td>
+                                            {% if allocation.hall %}
+                                                {{ allocation.hall.name }}<br>
+                                                <small class="text-muted">
+                                                    Building: {{ allocation.hall.building_name }}<br>
+                                                    Floor: {{ allocation.hall.floor_number }}
+                                                </small>
+                                            {% else %}
+                                                Not Assigned
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ allocation.seat_number }}</td>
+                                        <td>
+                                            <a href="{{ url_for('hall_ticket') }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-print"></i> Hall Ticket
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No exam allocations found. Please check back later.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card-header {
+    border-bottom: 2px solid rgba(0,0,0,0.125);
+}
+.card-body p {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+.card-body p:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.card-body strong {
+    color: #495057;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+.table th {
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %} 
