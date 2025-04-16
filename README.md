@@ -20,7 +20,7 @@ A Flask-based web application for managing exam hall allocations, student data, 
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/shahin-halcon/exam-hall-allocation-system.git
 cd exam-hall-allocation-system
 ```
 
